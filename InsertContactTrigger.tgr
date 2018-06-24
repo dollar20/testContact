@@ -1,0 +1,4 @@
+trigger InsertContactTrigger on Contact (after insert) {
+    TriggerHandlerContact handler = new TriggerHandlerContact();
+    handler.afterInsert(trigger.new);
+}
