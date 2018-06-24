@@ -1,0 +1,116 @@
+<apex:page controller="MyContactController">
+    <apex:slds />
+    <apex:form >
+        <apex:pageBlock title="Contact List" id="pageBlock">
+            <apex:pageMessages id="showmsg1"></apex:pageMessages>
+            <div class="slds-form-element" style="float: right;margin-bottom:15px;">
+                  <div class="slds-form-element__control slds-input-has-fixed-addon">
+                        <span class="slds-form-element__addon" id="fixed-text-addon-pre">Name</span>
+                        <apex:inputText styleClass="slds-input" id="searchTextNameId" value="{!searchTextName}"/>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Search" action="{!search}"  rerender="pageBlock" />
+                  </div>
+            </div>
+
+             <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--cell-buffer">
+                <thead>
+                  <tr class="slds-text-heading--label">
+                    <th>
+                        <apex:commandLink action="{!ViewData}" value="Name{!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}">
+                            <apex:param value="Name" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--1-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Email{!IF(sortExpression=='Email',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="Email" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--3-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Contact Level{!IF(sortExpression=='Contact_Level__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="Contact Level" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--4-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Account{!IF(sortExpression=='Account.Id',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="Account.Id" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--1-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Owner{!IF(sortExpression=='Owner.Id',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="Owner.Id" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--1-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Created By{!IF(sortExpression=='CreatedBy.Name',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="CreatedBy.Name" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="slds-text-heading--label slds-size--1-of-12" scope="col">
+                        <apex:commandLink action="{!ViewData}" value="Created Date{!IF(sortExpression=='CreatedDate',IF(sortDirection='ASC','▼','▲'),'')}">
+                           <apex:param value="CreatedDate" name="column" assignTo="{!sortExpression}" ></apex:param>
+                        </apex:commandLink>
+                    </th>
+                    <th class="row-action slds-cell-shrink" scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+              <apex:repeat value="{! contacts }" var="ct" rendered="{!NOT(ISNULL(contacts))}" rows="{!0}">
+              <tr>
+                  <th scope="row" data-label="Contact Name">
+                   <apex:outputLink value="/{!ct.Id}">
+                           <apex:outputText value="{!ct.Name}"/>
+                      </apex:outputLink>
+                   
+                  </th>
+                  <td data-label="Email">
+                    <div class="slds-truncate" title="Email">{!ct.Email}</div>
+                  </td>
+                  <td data-label="Contact Level">
+                    <div class="slds-truncate" title="ContactLevel">{!ct.Contact_Level__c}</div>
+                  </td>
+
+                  <td data-label="Account Name">
+                      <apex:outputLink value="/{!ct.Account.Id}">
+                           <apex:outputText value="{!ct.Account.Name}"/>
+                      </apex:outputLink>
+                  </td>
+                  <td data-label="Owner">
+                        <apex:outputLink value="/{!ct.Owner.Id}">
+                            <apex:outputText value="{!ct.Owner.Name}"/>
+                        </apex:outputLink>
+                  </td>
+                  <td data-label="Created By">
+                       <apex:outputLink value="/{!ct.CreatedBy.Id}">
+                            <apex:outputText value="{!ct.CreatedBy.Name}"/>
+                        </apex:outputLink>
+                  </td>
+                  <td data-label="Created Date">
+                    <div class="slds-truncate" title="Created Date"><apex:outputText value="{0,date,dd.MM.YYYY}"><apex:param value="{!ct.CreatedDate}" /></apex:outputText></div>
+                  </td>
+                  <td data-label="Delete">
+                    <div class="slds-truncate" title="Delete">
+                     <apex:commandButton styleclass="slds-button slds-button_destructive" value="Delete" onclick="if(!confirm('Are you sure?')){return false;}"  action="{!Del}" reRender="pageBlock" >
+                         <apex:param name="myParam" value="{!ct.Id}" assignTo="{!ATMId}"/>
+                      </apex:commandButton></div>
+                  </td>
+               </tr>
+               </apex:repeat>
+            </tbody>
+            </table>
+            <div>
+             <div style="float: left;display:{!IF(NOT(AND(ISNULL(contacts),(contacts.size)<11)) ,'block','none')}">
+                    <br/>
+                    <font class="slds-text-heading_small" size="1pt">Page #:&nbsp;<apex:outputLabel value="{!PageNumber}"/>&nbsp;out of&nbsp;<apex:outputLabel value="{!totalPageNumber}"/>&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                    <apex:commandButton styleclass="slds-button slds-button_neutral" value="Previous" action="{!previousBtnClick}" disabled="{!previousButtonEnabled}" reRender="pageBlock"></apex:commandButton>
+                    <apex:commandButton styleclass="slds-button slds-button_neutral" value="Next" action="{!nextBtnClick}" reRender="pageBlock" disabled="{!nextButtonDisabled}" ></apex:commandButton>
+              </div>
+             <div style="float: right;">
+                  <br/>
+                    <apex:commandButton styleclass="slds-button slds-button slds-button_success" value="New Contact" onclick="window.location.href='{!URLFOR($Page.AddContact)}'" reRender="pageBlock" disabled="{!nextButtonDisabled}" >
+                    </apex:commandButton>
+                    <!--<button type="button" class="slds-button slds-button_success" onclick="window.location.href='{!URLFOR($Page.Order,'',[Id=Product_Table__c.Id])}'">Buy</button>-->
+
+              </div>
+              </div>
+           </apex:pageBlock>
+     </apex:form>
+</apex:page>

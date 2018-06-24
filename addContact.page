@@ -1,0 +1,78 @@
+<apex:page controller="MyContactController">
+<apex:slds />
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<apex:form id="theForm">
+    <apex:pageBlock mode="edit" title="Add New Contact">
+    <apex:pageMessages id="showmsg"></apex:pageMessages>
+        
+        <apex:inputHidden rendered="false" required="true" value="{!prod.OwnerId}"/>
+        <div class="slds-form slds-form_horizontal">
+          <div class="slds-form-element">
+          <label class="slds-form-element__label" for="form-element-01">First Name</label>
+          <div class="slds-form-element__control">
+               <apex:inputField id="form-element-01" styleclass="slds-input" value="{!prod.FirstName}"/>
+          </div>
+        </div>
+
+          <div class="slds-form-element">
+          <label class="slds-form-element__label" for="form-element-02">
+            <abbr class="slds-required" title="required">*</abbr>Last Name</label>
+          <div class="slds-form-element__control">
+               <apex:inputField id="form-element-02" styleclass="slds-input" value="{!prod.LastName}"/>
+          </div>
+        </div>
+          <div class="slds-form-element">
+              <label class="slds-form-element__label" for="form-element-03">
+                <abbr class="slds-required" title="required">*</abbr>Email</label>
+                  <div class="slds-form-element__control">
+                   <apex:inputField id="form-element-03" styleclass="slds-input" value="{!prod.Email}" />
+              </div>
+            </div>
+          <div class="slds-form-element">
+            <label class="slds-form-element__label" for="input-id-04">Contact Lavel</label>
+             <div class="slds-form-element__control slds-select_container slds-size_small">
+              <apex:inputField styleclass="slds-select" id="form-element-04" value="{!prod.Contact_Level__c}"/>
+
+            </div>
+          </div>
+        <div class="slds-form-element">
+              <label class="slds-form-element__label" for="form-element-05">Account</label>
+                  <div class="slds-form-element__control" >
+                   <apex:inputField id="form-element-05" styleclass="slds-lookup slds-input"  value="{!prod.AccountId}" />
+              </div>
+            </div>
+        
+        </div>
+        <div class="slds-panel__section slds-has-divider--bottom">
+              <div class="slds-media slds-text-align_center">
+                <div class="slds-media__body">
+                  <div class="slds-button-group  slds-m-top--small" role="group">
+                    <button class="slds-button slds-button_neutral slds-grow" onclick="window.location.href='{!URLFOR($Page.My_Contract_View)}'">To Contact List</button>
+                    <input type="button" class="slds-button slds-button_success slds-grow" onclick="saveFunction();" value="Save"/>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+           <apex:actionFunction name="saveFunction" action="{!save}" rerender="showmsg"/>
+         
+    </apex:pageBlock>
+</apex:form>
+
+<script>
+
+$("input[name$='form-element-05']").css( "width", "50%");
+$("a[id*='form-element-05']").css( "width", "25px");
+$("a[id*='form-element-05']").css( "padding", "0px");
+$("a[id*='form-element-05']").css( "background-color", "#f8f8f8");
+$("a[id*='form-element-05']").css( "border-color", "#f8f8f8");
+ $("input[name$='form-element-03']").validate({
+    email: {
+        required: true,
+        email: true,
+        regex: /^\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+    }
+});
+</script>
+
+</apex:page>
